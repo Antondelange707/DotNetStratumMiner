@@ -39,7 +39,8 @@ namespace DotNetStratumMiner
             // Spin up background threads to do the hashing
             for (int i = 0; i < threads.Length; i++)
             {
-                threads[i] = new Thread(() => doScrypt(databyte, targetbyte, (uint)i, (uint)threads.Length));
+                Console.WriteLine(i.ToString());
+                threads[i] = new Thread(() => doScrypt(databyte, targetbyte, (i == 0 ? (uint)i : (uint)(i*500000)), (uint)threads.Length));
                 threads[i].IsBackground = false;
                 threads[i].Priority = ThreadPriority.Normal;//.Lowest; // For debugging
                 threads[i].Start();
@@ -79,6 +80,7 @@ namespace DotNetStratumMiner
             {
                 byte[] ScryptResult = new byte[32];
 
+                Console.WriteLine("Nonce starting at {0:0}", Nonce);
                 // Loop until done is set or we meet the target
                 while (!done)
                 {
@@ -100,6 +102,7 @@ namespace DotNetStratumMiner
                     else
                         Nonce += Increment; // If not, increment the nonce and try again
                 }
+                Console.WriteLine("Nonce ended at {0:0}", Nonce);
             }
             catch (Exception ex)
             {
